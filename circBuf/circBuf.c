@@ -4,9 +4,9 @@
 #include "circBuf.h"
 static size_t smallestPowerOf2GreaterOrEqualThan(size_t);
 
-char circBuf_init(circBuf* self, size_t size)
+char circBuf_init(circBuf* self, size_t length)
 {
-	self->mask = smallestPowerOf2GreaterOrEqualThan(size) - 1;
+	self->mask = smallestPowerOf2GreaterOrEqualThan(length) - 1;
 	if (self->mask >= (size_t)-1 / sizeof(double))
 	{
 		return 1;

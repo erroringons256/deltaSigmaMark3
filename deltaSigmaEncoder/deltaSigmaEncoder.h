@@ -9,14 +9,16 @@
 #define DELTASIGMA_API __declspec(dllimport)
 #endif
 
+#ifndef CPREFIX
 #ifdef __cplusplus
-extern "C"
+#define CPREFIX extern "C"
+#else
+#define CPREFIX
 #endif
-DELTASIGMA_API char deltaSigmaEncode(iirFilterStream* state, double sample, double signalGain);
+#endif
 
-#ifdef __cplusplus
-extern "C"
-#endif
-DELTASIGMA_API double randDouble();
+//deltaSigmaEncoder.c
+CPREFIX DELTASIGMA_API char deltaSigmaEncode(iirFilterStream* state, double sample, double signalGain);
+CPREFIX DELTASIGMA_API double randDouble();
 
 #endif
