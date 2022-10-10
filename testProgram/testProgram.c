@@ -3,19 +3,9 @@
 #include <time.h>
 #include "circBuf.h"
 #include "iirFilter.h"
+#include "deltaSigmaEncoder.h"
+#define GAIN 0.713520160639131
 
-inline double randDouble()
-{
-	return (2.0 / RAND_MAX) * (double)rand() - 1;
-}
-
-char deltaSigmaEncode(iirFilterStream* state, double sample)
-{
-	double u = 0.713520160639131 * sample - circBuf_getElement(state->yState, 0);
-	char y = (u + randDouble()) >= 0;
-	iirFilterStream_compute(state, 2.0 * (double)y - 1.0 - u);
-	return y;
-}
 int main()
 {
 	srand(time(0));
@@ -52,8 +42,8 @@ int main()
 		samplesRead = 2 * (fread(inputBuffer, sizeof(double), 1048576, inputFile) / 2);
 		for (size_t i = 0; i < samplesRead; i += 2)
 		{
-			outputBuffer[i] = 1 + 254 * deltaSigmaEncode(&channel1, inputBuffer[i]);
-			outputBuffer[i + 1] = 1 + 254 * deltaSigmaEncode(&channel2, inputBuffer[i + 1]);
+			outputBuffer[i] = 1 + 254 * deltaSigmaEncode(&channel1, inputBuffer[i], GAIN);
+			outputBuffer[i + 1] = 1 + 254 * deltaSigmaEncode(&channel2, inputBuffer[i + 1], GAIN);
 		}
 		fwrite(outputBuffer, sizeof(char), samplesRead, outputFile);
 		
